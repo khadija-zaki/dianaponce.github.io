@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Password Protected Page</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to right, #4A628A, #7AB2D3);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            color: #4A628A;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+        .back-button {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background-color: #B9E5E8;
+            color: #4A628A;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .back-button:hover {
+            background-color: #DFF2EB;
+            transform: translateY(-2px);
+        }
+        .container, .success-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(223, 242, 235, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            max-height: 700px;
+            position: absolute;
+            transition: opacity 0.5s ease;
+        }
+        .content-container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: center;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .image-container img {
+            width: 200px;
+            border-radius: 20px;
+        }
+        .caption {
+            margin-top: 15px;
+            font-size: 22px;
+            color: #4A628A;
+            font-weight: bold;
+            text-align: center;
+        }
+        .keypad-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #passwordInput {
+            font-size: 24px;
+            width: 80%;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border: 2px solid #B9E5E8;
+            outline: none;
+            color: #4A628A;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .key {
+            background-color: #7AB2D3;
+            color: #fff;
+            padding: 20px;
+            font-size: 20px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            border: none;
+        }
+        .enter-btn {
+            margin-top: 15px;
+            padding: 10px;
+            width: 80%;
+            background-color: #B9E5E8;
+            color: #4A628A;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .popup-message {
+            background-color: #DFF2EB;
+            color: #4A628A;
+            font-size: 24px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .success-container {
+            display: none;
+        }
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+        }
+        .button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #B9E5E8;
+            color: #4A628A;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .button img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 5px;
+        }
+        .button:hover {
+            background-color: #DFF2EB;
+            transform: translateY(-2px);
+        }
+        .scrollable-text {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            color: #4A628A;
+            font-size: 18px;
+            text-align: left;
+        }
+        .iframe-container {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<button class="back-button" id="backButton" onclick="goBack()">Back</button>
+
+<div class="container" id="mainContainer">
+    <div class="content-container">
+        <div class="image-container">
+                <img src="https://drive.google.com/uc?id=1doMhTyLg1-Qx0Z0E716m4_LtP8IvuxGh" alt="cute image" />
+            
+            <div class="caption">Guess the password, pretty girl</div>
+        </div>
+        <div class="keypad-container">
+            <input type="password" id="passwordInput" placeholder="••••••" readonly>
+            <div class="keypad">
+                <button class="key" onclick="addNumber('1')">1</button>
+                <button class="key" onclick="addNumber('2')">2</button>
+                <button class="key" onclick="addNumber('3')">3</button>
+                <button class="key" onclick="addNumber('4')">4</button>
+                <button class="key" onclick="addNumber('5')">5</button>
+                <button class="key" onclick="addNumber('6')">6</button>
+                <button class="key" onclick="addNumber('7')">7</button>
+                <button class="key" onclick="addNumber('8')">8</button>
+                <button class="key" onclick="addNumber('9')">9</button>
+                <button class="key" onclick="clearInput()">C</button>
+                <button class="key" onclick="addNumber('0')">0</button>
+            </div>
+            <button class="enter-btn" onclick="checkPassword()">Enter</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup-overlay" id="popup">
+    <div class="popup-message">YAY YOU GUESSED IT CORRECT</div>
+</div>
+
+<div class="success-container" id="successContainer">
+    <div class="buttons-container">
+        <button class="button" onclick="buttonAction('13/07/24')">
+            <img src="https://drive.google.com/file/d/1ap8Nps4tgP5uiqxonzqI7lRRnRb9XTUB/view?usp=sharing" alt="Icon 1">
+            <span>13/07/24</span>
+        </button>
+        <button class="button" onclick="buttonAction('16/07/24')">
+            <img src="https://drive.google.com/file/d/1IUpyGQZhT--_Hr_FDhWMxvmVjEfCJX_8/view?usp=sharing" alt="Icon 2">
+            <span>16/07/24</span>
+        </button>
+        <button class="button" onclick="buttonAction('10/09/24')">
+            <img src="https://drive.google.com/file/d/1YxvW-0HwlHvcNM6xJo_vLxaujSdRyHzf/view?usp=sharing" alt="Icon 3">
+            <span>10/09/24</span>
+        </button>
+        <button class="button" onclick="buttonAction('didi')">
+            <img src="https://drive.google.com/file/d/105J4e5-dwmBs43igZg80e9-PnWyxON4X/view?usp=sharing" alt="Icon 4">
+            <span>didi</span>
+        </button>
+    </div>
+    <div id="contentArea" class="scrollable-text"></div>
+</div>
+
+<script>
+    const correctPassword = '160724';
+    
+    function addNumber(number) {
+        const passwordInput = document.getElementById("passwordInput");
+        passwordInput.value += number;
+    }
+
+    function clearInput() {
+        document.getElementById("passwordInput").value = '';
+    }
+
+    function checkPassword() {
+        const passwordInput = document.getElementById("passwordInput").value;
+        if (passwordInput === correctPassword) {
+            document.getElementById("mainContainer").style.display = 'none';
+            document.getElementById("popup").style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById("popup").style.display = 'none';
+                document.getElementById("successContainer").style.display = 'flex';
+                document.getElementById("backButton").style.display = 'block';
+            }, 1500);
+        } else {
+            alert("Incorrect password!");
+            clearInput();
+        }
+    }
+
+    function goBack() {
+        document.getElementById("mainContainer").style.display = 'flex';
+        document.getElementById("successContainer").style.display = 'none';
+        document.getElementById("backButton").style.display = 'none';
+    }
+
+    function buttonAction(buttonName) {
+        const contentArea = document.getElementById("contentArea");
+        contentArea.innerHTML = ''; // Clear previous content
+
+        if (buttonName === '13/07/24') {
+            contentArea.innerHTML = `<div class="scrollable-text">
+                <h3>${buttonName} Content</h3>
+                <iframe style="border-radius:12px; width: 100%;" src="https://open.spotify.com/embed/track/4m0q0xQ2BNl9SCAGKyfiGZ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <div class="song-description">
+                    July the 13th <br><br>
+                    July 13th - it's just a date to most people, but for me, it became a bookmark in my memory. You’d posted Somebody Else on your Instagram notes, and I’d never heard it before. I hit play out of curiosity, and suddenly, it was like I’d unlocked this whole new sound that instantly clicked. I liked it so much that I added it to my playlist, and before I knew it, I was listening on repeat, lost in the lyrics. And in a weird way, I realized I wanted to know more about you—the girl behind the song, the mystery hidden in those few lines on a screen.<br><br>
+                    That day, you also shared your playlist with me, and as I started scrolling through your songs, I remember thinking, “wow she has really good taste”. Every track, every artist - it was like a piece of you I could discover without saying a word, and it just made me want to know you more. It’s funny, I don’t think you knew it, but in those playlists, you had me hooked on way more than the music.<br><br>
+                    So, yeah, July 13th is just a date. But for me, it’s the moment everything changed, the day I realized I wanted to know you, not just as a name on my screen, but as someone real, someone who might feel the same way about me. And every time Somebody Else comes on, I’m right back there, wondering what might happen next.
+                </div>
+            </div>`;
+        } else if (buttonName === '16/07/24') {
+    contentArea.innerHTML = `<div class="scrollable-text">
+        <h3>${buttonName} Content</h3>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2CcQDI2IDhHbmBIFup58JE?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="song-description">
+            16th of july<br><br>
+            This song takes me right back to when you first asked me to be your girlfriend. I can still feel that little sense of hesitation I had, like I was balancing between excitement and uncertainty. You saw it in me before I could even say a word, and you kept reassuring me, like you knew I just needed to hear it. I remember you clearly saying - 'Khadija, I'm willing to cross the line for you. Tell me everything, and I will love you regardless of your flaws.'<br><br>
+            I remember sitting there with my heart racing, and you were so patient, always reminding me that it was okay to let my guard down. Looking back at those messages, I realize how cute we were, like two kids discovering what it was like to really trust someone for the first time. It wasn’t even about being in love yet; it was about building that trust, finding comfort in each other’s quirks, insecurities, and flaws.<br><br>
+            It’s wild to think how innocent and new everything felt then, how your words were exactly what I needed to hear. We weren’t perfect, but those moments of pure honesty made it feel like we were creating our own little world where we could just be ourselves. That’s what made it so beautiful.<br><br>
+        </div>
+    </div>`;
+        } else if (buttonName === 'didi') {
+            contentArea.innerHTML = `<div class="scrollable-text">
+        <h3>${buttonName} Content</h3>
+        
+            <div class="song-description">
+                    Dear Diana,<br><br> 
+                    I just want to take a moment to say how incredibly lucky I am to have you in my life. From the first time we met, you’ve captured my heart with your kindness, laughter, and those beautiful eyes of yours. You are the prettiest girl I’ve ever seen, and I’m always in awe of your beauty.<br><br>
+                    I love you so much, and I’m really grateful for your patience. You’ve been there for me through everything, loving me even when I haven’t been easy to love. I know I can get upset over little things and sometimes act a bit dry. I’m truly sorry for that. It’s just me struggling with my feelings and never a reflection of how much I care about you. Thank you for being so understanding.<br><br>
+                    You inspire me every day to be better and to appreciate the little moments we share. Your presence makes even the toughest days brighter, and I treasure every moment with you.<br><br>
+                    I also want to apologize if I’ve ever made you feel unappreciated or if my frustrations have affected you. That’s the last thing I want, because you deserve all the love and happiness in the world. I promise to work on being more patient and understanding, just like you’ve always been with me. <br><br>
+                    You mean everything to me, Diana. I can’t imagine my life without your laughter and warmth. Together, I know we can create something beautiful, filled with love and amazing adventures. Thank you for being my partner and my inspiration. I love you more than I can say.<br><br>
+                    Forever yours,<br><br>
+                    Khadija xxx
+        </div>
+    </div>`;
+
+        } else {
+            contentArea.innerHTML = `<div class="scrollable-text">
+                <h3>${buttonName} Content</h3>
+                <iframe style="border-radius:12px; width: 100%;" src="https://open.spotify.com/embed/track/5rFj8OzffT0iggSjcBaeND?si=821fffbe784341de_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <div class="song-description">
+                    September the 10th<br><br> 
+                    September 10th was such a special day for me. That’s when you first showed me the first chapter of your book, 16 Chapters of Love; 143 Pages of Us. I remember feeling so excited when you told me you were gonna give me the first chappter to read. It felt like you were letting me into your world, sharing your thoughts and feelings in the sweetest way.<br><br>
+                    I could just picture you at your table, surrounded by crumpled papers and looking a bit stressed but super determined. I admired how you decided to write a book, even though it was something you never thought you'd do. It was so brave of you to put your heart out there, especially when you talked about the pressure and worry that came with writing.<br><br>
+                    As I read your words, it hit me how much our time together means to you. You shared that mix of excitement and doubt we both felt at the beginning, and it made me smile because I felt the same way, wondering if we were on the same page and if this connection was real.<br><br>
+                    Your honesty made everything feel so much closer. It was amazing how your words could make it seem like you were right there next to me, talking to me. I could almost hear your voice as I read, your cute, warm, comforting voice, it made me smile. <br><br>
+                    That first chapter wasn’t just a story; it was a beautiful reflection of our journey together—the little moments and big feelings we’ve shared. It reminded me that love is found in both the big gestures and the simple, quiet times. I can't wait to see where our story goes next, knowing that with each chapter, we're writing a wonderful love story together.
+                </div>
+            </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>
